@@ -1,6 +1,9 @@
 package com.example.bruno.tutorialandroid;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.support.annotation.MainThread;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -51,5 +54,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             retry = false;
         }
     }
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
+    }
 
+    public void update(){
+
+    }
+
+    @Override
+    public void draw(Canvas canvas){
+        super.draw(canvas);
+    }
 }
