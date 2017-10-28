@@ -1,7 +1,6 @@
 package com.example.bruno.tutorialandroid;
 
 import android.graphics.Canvas;
-import android.icu.text.SymbolTable;
 import android.view.SurfaceHolder;
 
 /**
@@ -39,7 +38,6 @@ public class MainThread extends Thread{
         while(running){
             startTime = System.nanoTime();
             canvas = null;
-
             try{
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder){
@@ -58,13 +56,14 @@ public class MainThread extends Thread{
 
             timeMillis = (System.nanoTime() - startTime)/1000000;
             waitTime = targetTime - timeMillis;
+
             try{
                 if(waitTime > 0){
                     this.sleep(waitTime);//FRAME RATE CAP
                 }
             }catch (Exception e){e.printStackTrace();}
 
-            totalTime = System.nanoTime() - startTime;
+            totalTime += System.nanoTime() - startTime;
             frameCount++;
 
             if(frameCount == MAX_FPS){
@@ -74,14 +73,7 @@ public class MainThread extends Thread{
                 System.out.println(averageFPS);
             }
         }
-
-
-
-
     }
-
-
-
 }
 
 
