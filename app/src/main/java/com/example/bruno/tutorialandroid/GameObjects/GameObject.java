@@ -1,4 +1,4 @@
-package com.example.bruno.tutorialandroid;
+package com.example.bruno.tutorialandroid.GameObjects;
 
 import android.graphics.Canvas;
 

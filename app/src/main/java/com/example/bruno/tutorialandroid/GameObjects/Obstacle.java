@@ -1,9 +1,10 @@
-package com.example.bruno.tutorialandroid;
+package com.example.bruno.tutorialandroid.GameObjects;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+
+import com.example.bruno.tutorialandroid.Constants;
 
 /**
  * Created by Bruno on 28/10/2017.
@@ -27,10 +28,7 @@ public class Obstacle implements GameObject {
     }
 
     public boolean playerCollide(RectPlayer player){
-        return rectangle.contains(player.getRectangle().left, player.getRectangle().top)
-                || (rectangle.contains(player.getRectangle().right, player.getRectangle().top))
-                || (rectangle.contains(player.getRectangle().left, player.getRectangle().bottom))
-                || (rectangle.contains(player.getRectangle().right, player.getRectangle().bottom));
+        return Rect.intersects(rectangle, player.getRectangle()) || Rect.intersects(rectangle2, player.getRectangle());
     }
 
 
