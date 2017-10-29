@@ -39,7 +39,7 @@ public class GameplayScene implements Scene {
 
         player = new RectPlayer(new Rect(100, 100, 200, 200), Color.rgb(255, 0, 0));
 
-        playerPoint = new Point(Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT - 150);
+        playerPoint = new Point(150, Constants.SCREEN_HEIGHT/2);
         player.update(playerPoint);
 
         obstacleManager = new ObstacleManager(180, 350, 60);
@@ -83,7 +83,7 @@ public class GameplayScene implements Scene {
 
     @Override
     public void update() {
-        if (!gameOver) {
+        if (true) {
             if(frameTime < Constants.INIT_TIME)
                 frameTime = Constants.INIT_TIME;
 
@@ -94,10 +94,13 @@ public class GameplayScene implements Scene {
                 float roll = orientationData.getOrientation()[2] - orientationData.getStartOrientation()[2];     //X DIRECTION
 
                 float xSpeed = 2* roll * Constants.SCREEN_WIDTH/750f;
-                float ySpeed = pitch * Constants.SCREEN_HEIGHT/750f; //1SECOND TO FULLFILL THE SCREEN
+                float ySpeed = 2* pitch * Constants.SCREEN_HEIGHT/750f; //1SECOND TO FULLFILL THE SCREEN
 
-                playerPoint.x -= Math.abs(xSpeed* elapsedTime) > 3 ? ySpeed* elapsedTime : 0; //5 PIXELS MARGIN
-                //playerPoint.y -= Math.abs(xSpeed* elapsedTime) > 3 ? ySpeed* elapsedTime : 0; //5 PIXELS MARGIN
+                //playerPoint.x -= Math.abs(xSpeed* elapsedTime) > 3 ? ySpeed* elapsedTime : 0; //5 PIXELS MARGIN
+
+                playerPoint.y -= Math.abs(xSpeed* elapsedTime) > 3 ? xSpeed* elapsedTime : 0; //5 PIXELS MARGIN
+
+                System.out.println(playerPoint.x + " , " + playerPoint.y);
             }
 
             //BOUNDS

@@ -18,7 +18,7 @@ public class ObstacleManager {
     private ArrayList<Obstacle> obstacles;
     private int playerGap;
     private int obstacleGap;
-    private int obstacleHeight;
+    private int obstacleWidth;
 
     private long startTime;
 
@@ -26,10 +26,10 @@ public class ObstacleManager {
 
     private int score = 0;
 
-    public ObstacleManager(int playerGap, int obstacleGap, int obstacleHeight){
+    public ObstacleManager(int playerGap, int obstacleGap, int obstacleWidth){
         this.playerGap = playerGap;
         this.obstacleGap = obstacleGap;
-        this.obstacleHeight = obstacleHeight;
+        this.obstacleWidth = obstacleWidth;
 
         startTime = initTime = System.currentTimeMillis() ;
 
@@ -53,10 +53,11 @@ public class ObstacleManager {
 
         while(currY < 0) { //While the last hasn't gone off the screen yet
             int xStart = (int)(Math.random()*(Constants.SCREEN_WIDTH - playerGap)); //0-1(ex)
-            obstacles.add(new Obstacle(obstacleHeight, Color.BLACK, xStart, currY, playerGap));
-            currY += obstacleHeight + obstacleGap;
+            obstacles.add(new Obstacle(obstacleWidth, Color.BLACK, xStart, currY, playerGap));
+            currY += obstacleWidth + obstacleGap;
         }
     }
+
 
     public void update(){
         if(startTime < Constants.INIT_TIME)
@@ -65,18 +66,21 @@ public class ObstacleManager {
         int elapsedTime = (int) (System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
-        float speed = (float) (Math.sqrt(1 + (startTime - initTime)/2000.0) * (Constants.SCREEN_HEIGHT/8000.0f));
+        float speed = (float) (Math.sqrt(1 + (startTime - initTime)/2000.0) * (Constants.SCREEN_WIDTH/8000.0f));
 
         for(Obstacle ob : obstacles){
             ob.incrementY(speed * elapsedTime);
         }
 
         if(obstacles.get(obstacles.size() - 1).getRectangle().top  >= Constants.SCREEN_HEIGHT){
-            int xStart = (int)(Math.random()*(Constants.SCREEN_WIDTH - playerGap));
-            obstacles.add(0, new Obstacle(obstacleHeight, Color.BLACK, xStart, obstacles.get(0).getRectangle().top - obstacleHeight - obstacleGap, playerGap));
+            int xStart = (int)(Math.random()*(Constants.SCREEN_HEIGHT - playerGap));
+
+            obstacles.add(0, new Obstacle(obstacleWidth, Color.BLACK, xStart, obstacles.get(0).getRectangle().top - obstacleWidth - obstacleGap, playerGap));
+
             obstacles.remove(obstacles.size() - 1);
             score++;
         }
+
     }
 
     public void draw(Canvas canvas){
