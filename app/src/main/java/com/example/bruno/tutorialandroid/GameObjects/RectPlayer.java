@@ -4,11 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 
 import com.example.bruno.tutorialandroid.Animation;
+import com.example.bruno.tutorialandroid.AnimationManager;
 import com.example.bruno.tutorialandroid.Constants;
 import com.example.bruno.tutorialandroid.R;
 
@@ -19,20 +19,22 @@ import com.example.bruno.tutorialandroid.R;
 public class RectPlayer implements GameObject {
 
     private Rect rectangle;
-    private int color; //Cores = INTEIROS
+    private int color;
 
     private Animation idle;
     private Animation walkRight;
     private Animation walkLeft;
+    private AnimationManager animationManager;
+
 
     public RectPlayer(Rect rectangle, int color){
         this.rectangle = rectangle;
         this.color = color;
 
         BitmapFactory bf = new BitmapFactory();
-        Bitmap idleimg = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.alienBlue);
-        Bitmap walk1 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.alienBlue_walk1);
-        Bitmap walk2 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.alienBlue_walk2);
+        Bitmap idleimg = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.alienblue);
+        Bitmap walk1 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.alienblue_walk1);
+        Bitmap walk2 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.alienblue_walk2);
 
 
         idle = new Animation(new Bitmap[]{idleimg}, 2);
@@ -45,6 +47,8 @@ public class RectPlayer implements GameObject {
         walk2 = Bitmap.createBitmap(walk2, 0, 0, walk2.getWidth(), walk2.getHeight(), m, false);
 
         walkLeft = new Animation(new Bitmap[]{walk1, walk2}, 0.5f);
+
+        animationManager =  new AnimationManager(new Animation[]{idle, walkRight, walkLeft});
     }
 
     public Rect getRectangle(){
@@ -53,15 +57,17 @@ public class RectPlayer implements GameObject {
 
     @Override
     public void draw(Canvas canvas) {
-        Paint paint = new Paint();
-        paint.setColor(color);
+        //Paint paint = new Paint();
+        //paint.setColor(color);
 
-        canvas.drawRect(rectangle, paint);
+        //canvas.drawRect(rectangle, paint);
+
+        animationManager.draw(canvas, rectangle);
     }
 
     @Override
     public void update() {
-
+        animationManager.update();
     }
 
     public void update(Point point){
@@ -71,5 +77,14 @@ public class RectPlayer implements GameObject {
 
         int state = 0;
 
+        if(rectangle.left - oldLeft > 5){
+            state = 1;//RIGHT
+        }
+        else if(rectangle.left - oldLeft < -5){
+            state = 2;//LEFT
+        }
+
+        animationManager.playAnim(state);
+        animationManager.update();
     }
 }
