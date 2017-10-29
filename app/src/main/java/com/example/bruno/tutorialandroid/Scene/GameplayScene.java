@@ -5,11 +5,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.provider.Settings;
 import android.view.MotionEvent;
 
 import com.example.bruno.tutorialandroid.Constants;
 import com.example.bruno.tutorialandroid.GameObjects.ObstacleManager;
 import com.example.bruno.tutorialandroid.GameObjects.RectPlayer;
+import com.example.bruno.tutorialandroid.OrientationData;
 
 /**
  * Created by Bruno on 28/10/2017.
@@ -29,6 +31,8 @@ public class GameplayScene implements Scene {
     private boolean gameOver = false;
     private long gameOverTime;
 
+    private OrientationData orientationData;
+    private long frameTime;//time elapsed between frames
 
     public GameplayScene(){
 
@@ -38,7 +42,11 @@ public class GameplayScene implements Scene {
         playerPoint = new Point(Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT - 150);
         player.update(playerPoint);
 
-        obstacleManager = new ObstacleManager(200, 275, 60);
+        obstacleManager = new ObstacleManager(180, 350, 60);
+
+        orientationData = new OrientationData();
+        orientationData.register();
+        frameTime = System.currentTimeMillis();
     }
 
 
@@ -47,6 +55,7 @@ public class GameplayScene implements Scene {
         player.update(playerPoint);
         obstacleManager = new ObstacleManager(200, 275, 60);
         movingPlayer = false;
+        orientationData.newGame();
     }
 
     @Override
@@ -75,6 +84,35 @@ public class GameplayScene implements Scene {
     @Override
     public void update() {
         if (!gameOver) {
+            if(frameTime < Constants.INIT_TIME)
+                frameTime = Constants.INIT_TIME;
+
+            int elapsedTime = (int)(System.currentTimeMillis() - frameTime);
+            frameTime = System.currentTimeMillis();
+            if(orientationData.getOrientation() != null && orientationData.getStartOrientation() != null) {
+                float pitch = orientationData.getOrientation()[1] - orientationData.getStartOrientation()[1];    //Y DIRECTION
+                float roll = orientationData.getOrientation()[2] - orientationData.getStartOrientation()[2];     //X DIRECTION
+
+                float xSpeed = 2* roll * Constants.SCREEN_WIDTH/750f;
+                float ySpeed = pitch * Constants.SCREEN_HEIGHT/750f; //1SECOND TO FULLFILL THE SCREEN
+
+                playerPoint.x -= Math.abs(xSpeed* elapsedTime) > 3 ? ySpeed* elapsedTime : 0; //5 PIXELS MARGIN
+                //playerPoint.y -= Math.abs(xSpeed* elapsedTime) > 3 ? ySpeed* elapsedTime : 0; //5 PIXELS MARGIN
+            }
+
+            //BOUNDS
+            if(playerPoint.x < 0)
+                playerPoint.x = 0;
+            else if(playerPoint.x > Constants.SCREEN_WIDTH)
+                playerPoint.x = Constants.SCREEN_WIDTH;
+
+            if(playerPoint.y < 0)
+                playerPoint.y = 0;
+            else if(playerPoint.y > Constants.SCREEN_HEIGHT)
+                playerPoint.y = Constants.SCREEN_HEIGHT;
+
+
+
             player.update(playerPoint);
             obstacleManager.update();
             if (obstacleManager.playerCollide(player)) {
